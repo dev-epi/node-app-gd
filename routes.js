@@ -1,6 +1,7 @@
 const productCtrl = require('./controllers/products.controller')
 const userController = require('./controllers/users.controller')
 const experienceController = require('./controllers/experiences.controller')
+const skillsController = require('./controllers/skills.controller')
 module.exports = (server)=>{
 
     server.get('/products' , productCtrl.getProducts)
@@ -20,5 +21,10 @@ module.exports = (server)=>{
     server.post('/experiences' , experienceController.create)
     server.put('/experiences/:id' , experienceController.update)
     server.delete('/experiences/:id' , experienceController.remove)
+
+    server.get('/skills' , skillsController.getAll)
+    server.post('/skills' , skillsController.create)
+    server.put('/skills/:id' , skillsController.update)
+    server.delete('/skills/:id' , skillsController.remove)
 
 }
