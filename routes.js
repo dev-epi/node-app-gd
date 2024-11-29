@@ -32,5 +32,6 @@ module.exports = (server)=>{
     server.delete('/skills/:id' , skillsController.remove)
 
     server.post('/auth/register' , authController.register)
+    server.post('/auth/login' , authController.login)
 
 }
