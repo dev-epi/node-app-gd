@@ -13,12 +13,6 @@ const schema  = mongoose.Schema({
     }
 })
 
-schema.pre('save' , async function(next){
-    let user = this
-    console.log(user)
-    console.log('pre')
-    user.password = '12345'
-    next()
-})
+
 
 module.exports = mongoose.model('User' , schema)
