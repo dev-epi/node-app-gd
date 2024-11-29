@@ -7,6 +7,7 @@ const getAll = async (req, res) => {
 }
 
 const create = async (req, res) => {
+
   let item = new ExperienceModel(req.body)
 
   try {
@@ -18,6 +19,7 @@ const create = async (req, res) => {
 }
 
 const update = (req,res)=>{
+  
   ExperienceModel.updateOne({_id : req.params.id} ,req.body)
   .then(result=>res.send(result))
   .catch(err=>res.status(444).send(err))

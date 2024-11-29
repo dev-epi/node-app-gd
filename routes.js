@@ -6,6 +6,7 @@ const multipart = require('connect-multiparty')
 const uploadMiddleware = multipart({uploadDir : './uploads'})
 
 const authController = require('./controllers/auth.controller')
+const { authMiddleware } = require('./middlewares/auth')
 module.exports = (server)=>{
 
     server.get('/products' , productCtrl.getProducts)
@@ -17,11 +18,11 @@ module.exports = (server)=>{
 
     server.get('/users' , userController.getAll)
     server.post('/create_user',uploadMiddleware , userController.create)
-    server.put('/users/:id', uploadMiddleware , userController.update)
+    server.put('/users/:id', [authMiddleware, uploadMiddleware] , userController.update)
     server.delete('/users/:id' , userController.remove)
 
 
-    server.get('/experiences' , experienceController.getAll)
+    server.get('/experiences' , authMiddleware , experienceController.getAll)
     server.post('/experiences' , experienceController.create)
     server.put('/experiences/:id' , experienceController.update)
     server.delete('/experiences/:id' , experienceController.remove)
