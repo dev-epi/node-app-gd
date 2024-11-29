@@ -8,6 +8,10 @@ const getAll = async (req, res) => {
 const create = async (req, res) => {
   let user = new UserModel(req.body)
 
+  let f = req.files ? req.files.avatar : null
+  if(f && f.type && f.type.includes('image')){
+      user.image = f
+  }
   try {
     await user.save()
     res.send(user)
@@ -16,8 +20,14 @@ const create = async (req, res) => {
   }
 }
 
+
 const update = (req,res)=>{
-  UserModel.updateOne({_id : req.params.id} ,req.body)
+  console.log(req.files)
+  let user = req.body
+  if(req.files && req.files.image){
+    user.image = req.files.image
+  }
+  UserModel.updateOne({_id : req.params.id} ,user)
   .then(result=>res.send(result))
   .catch(err=>res.status(444).send(err))
 }

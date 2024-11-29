@@ -2,6 +2,10 @@ const productCtrl = require('./controllers/products.controller')
 const userController = require('./controllers/users.controller')
 const experienceController = require('./controllers/experiences.controller')
 const skillsController = require('./controllers/skills.controller')
+const multipart = require('connect-multiparty')
+const uploadMiddleware = multipart({uploadDir : './uploads'})
+
+const authController = require('./controllers/auth.controller')
 module.exports = (server)=>{
 
     server.get('/products' , productCtrl.getProducts)
@@ -12,8 +16,8 @@ module.exports = (server)=>{
 
 
     server.get('/users' , userController.getAll)
-    server.post('/create_user' , userController.create)
-    server.put('/users/:id' , userController.update)
+    server.post('/create_user',uploadMiddleware , userController.create)
+    server.put('/users/:id', uploadMiddleware , userController.update)
     server.delete('/users/:id' , userController.remove)
 
 
@@ -26,5 +30,7 @@ module.exports = (server)=>{
     server.post('/skills' , skillsController.create)
     server.put('/skills/:id' , skillsController.update)
     server.delete('/skills/:id' , skillsController.remove)
+
+    server.post('/auth/register' , authController.register)
 
 }
