@@ -23,9 +23,9 @@ module.exports = (server)=>{
 
 
     server.get('/experiences' , authMiddleware , experienceController.getAll)
-    server.post('/experiences' , experienceController.create)
-    server.put('/experiences/:id' , experienceController.update)
-    server.delete('/experiences/:id' , experienceController.remove)
+    server.post('/experiences', authMiddleware , experienceController.create)
+    server.put('/experiences/:id' ,authMiddleware, experienceController.update)
+    server.delete('/experiences/:id',authMiddleware , experienceController.remove)
 
     server.get('/skills' , skillsController.getAll)
     server.post('/skills' , skillsController.create)
