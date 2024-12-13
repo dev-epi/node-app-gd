@@ -10,7 +10,9 @@ const schema  = mongoose.Schema({
         path : String,
         name : String,
         size : String
-    }
+    },
+    resetCode : String,
+    resetTimeout : Date
 })
 
 

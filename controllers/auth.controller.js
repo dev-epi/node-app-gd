@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs')
 const UserModel = require('../models/User.model')
 const jwt = require('jsonwebtoken')
+const uuid = require('uuid')
+const nodemailer = require('nodemailer')
+const { transporter } = require('./mailConfig')
 exports.register = (req,res)=>{
 
     console.log(req.body)
@@ -51,4 +54,69 @@ exports.login = async(req,res)=>{
     }
 }
 
+/* 
+body : email
+*/
+exports.forgotPassword = async(req , res)=>{
+    let {email} = req.body
+    if(email){
+        try{
+            let user = await UserModel.findOne({email : email})
+            if(user){
+                user.resetCode = uuid.v4()
+                let expiration = new Date();
+                expiration.setHours(expiration.getHours() + 2)
+                user.resetTimeout = expiration
+                await user.save()
+                //send mail
+                let mailContent ={
+                    from : 'NODE APP',
+                    to : user.email,
+                    subject : 'Reset Password',
+                    text : '<a>test ',
+                    html : `reset code : <a href="http://localhost:3000/reset/${user.resetCode}">
+                    click here </a>`
+
+                }
+                await transporter.sendMail(mailContent)
+
+                res.send({message : 'Mail sent successfully'})
+
+            }else{
+                res.status(405).send({message : 'Invalid Credentials'})
+            }
+
+        }catch(err){
+            console.log(err)
+            res.status(405).send(err)
+        }
+    }else{
+        res.status(405).send({message : 'Missing required params'})
+    }
+}
+
+
+exports.resetPassword = async(req, res)=>{
+    let {resetCode  , newPassword} = req.body
+    if(resetCode && newPassword){
+        try{
+            let user = await UserModel.findOne({resetCode : resetCode})
+            if(user && new Date() < new Date(user.resetTimeout)){
+                    let key = await bcrypt.genSalt(10)
+                    user.password = await bcrypt.hash(newPassword , key)
+                    user.resetCode = null
+                    user.resetTimeout = null
+                    await user.save()
+                    res.send({message : 'Password updated !'})
+            } else{
+                res.status(405).send({message : 'Reset link expired'}) 
+            }           
+        }catch(err){
+            res.status(405).send(err) 
+        }
+
+    }else{
+        res.status(405).send({message : 'Missing required params'}) 
+    }
+}
 

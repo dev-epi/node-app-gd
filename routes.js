@@ -34,5 +34,7 @@ module.exports = (server)=>{
 
     server.post('/auth/register' , authController.register)
     server.post('/auth/login' , authController.login)
+    server.post('/auth/forgot-password' , authController.forgotPassword)
+    server.post('/auth/reset-password' , authController.resetPassword)
 
 }
